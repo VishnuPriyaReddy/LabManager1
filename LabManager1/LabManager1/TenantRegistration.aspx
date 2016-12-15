@@ -5,6 +5,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
+        <script src="Scripts/jquery-1.7.1.min.js"></script>  
+  
+    <script type="text/javascript">  
+  
+        function UserOrEmailAvailability() { //This function call on text change.             
+            $.ajax({  
+                type: "POST",  
+                url: "TenantRegistration.aspx/CheckEmail", // this for calling the web method function in cs code.  
+                data: '{useroremail: "' + $("#<%=TextBoxUN.ClientID%>")[0].value + '" }',// user name or email value  
+                contentType: "application/json; charset=utf-8",  
+                dataType: "json",  
+                success: OnSuccess,  
+                failure: function (response) {  
+                    alert(response);  
+                }  
+            });  
+        }  
+  
+        // function OnSuccess  
+        function OnSuccess(response) {  
+            var msg = $("#<%=lblStatus.ClientID%>")[0];  
+            switch (response.d) {  
+                case "true":  
+                    msg.style.display = "block";  
+                    msg.style.color = "red";  
+                    msg.innerHTML = "User Name Or Email already exists.";  
+                    break;  
+                case "false":  
+                    msg.style.display = "block";  
+                    msg.style.color = "green";  
+                    msg.innerHTML = "User Name Or Email Available";  
+                    break;  
+            }  
+        }  
+  
+    </script> 
 </head>
 <body>
    <form id="form1" runat="server">
@@ -15,6 +51,9 @@
                 <td class="auto-style6">
                     <asp:TextBox ID="TextBoxUN" runat="server" Height="22px" Width="170px"></asp:TextBox>
                 </td>
+                 <div id="checkusernameoremail" runat="server">                             
+                            <asp:Label ID="lblStatus" runat="server"></asp:Label>  
+                        </div> 
                 <td>
                     <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBoxUN" ErrorMessage="please enter username" ForeColor="Red"></asp:RequiredFieldValidator>
                 </td>
